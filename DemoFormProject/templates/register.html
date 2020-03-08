@@ -2,6 +2,38 @@
 
 {% block content %}
 
+    <style>
+        body {
+            animation: 10000ms ease-in-out infinite color-change;
+        }
+
+        @keyframes color-change {
+            0% {
+                background-color: cyan;
+            }
+
+            20% {
+                background-color: yellow;
+            }
+
+            40% {
+                background-color: palevioletred;
+            }
+
+            60% {
+                background-color: palevioletred;
+            }
+
+            80% {
+                background-color: limegreen;
+            }
+
+            100% {
+                background-color: cyan;
+            }
+        }
+    </style>
+
 <h2>{{ title }}</h2>
 
 {% with messages = get_flashed_messages(with_categories=true) %}

@@ -76,4 +76,10 @@ class UserRegistrationFormStructure(FlaskForm):
 #    
 #    submit = SubmitField('Submit')
 
-
+class ContactFormStructure(FlaskForm):
+    FirstName  = StringField('First name:  ' , validators = [DataRequired()])
+    LastName   = StringField('Last name:  ' , validators = [DataRequired()])
+    PhoneNumber   = StringField('Phone number:  ' , validators = [DataRequired()])
+    EMail  = StringField('E-Mail:  ' , validators = [DataRequired()])
+    Message  = StringField('Message:  ' , validators = [DataRequired()])
+    submit = SubmitField('Submit')

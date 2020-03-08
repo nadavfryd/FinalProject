@@ -33,9 +33,9 @@ from wtforms import TextField, TextAreaField, SubmitField, SelectField, DateFiel
 from wtforms import ValidationError
 
 
-from DemoFormProject.Models.QueryFormStructure import QueryFormStructure 
 from DemoFormProject.Models.QueryFormStructure import LoginFormStructure 
 from DemoFormProject.Models.QueryFormStructure import UserRegistrationFormStructure 
+from DemoFormProject.Models.QueryFormStructure import ContactFormStructure 
 
 ###from DemoFormProject.Models.LocalDatabaseRoutines import IsUserExist, IsLoginGood, AddNewUser 
 
@@ -52,16 +52,6 @@ def home():
         year=datetime.now().year,
     )
 
-@app.route('/contact')
-def contact():
-    """Renders the contact page."""
-    return render_template(
-        'contact.html',
-        title='Contact',
-        year=datetime.now().year,
-        message='Your contact page.'
-    )
-
 @app.route('/about')
 def about():
     """Renders the about page."""
@@ -69,54 +59,8 @@ def about():
         'about.html',
         title='About',
         year=datetime.now().year,
-        message='Your application description page.'
+        message='Information about the album'
     )
-
-
-@app.route('/Album')
-def Album():
-    """Renders the about page."""
-    return render_template(
-        'PictureAlbum.html',
-        title='Pictures',
-        year=datetime.now().year,
-        message='Welcome to my picture album'
-    )
-
-
-@app.route('/Query', methods=['GET', 'POST'])
-def Query():
-
-    Name = None
-    Country = ''
-    capital = ''
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\capitals.csv'))
-    df = df.set_index('Country')
-
-    form = QueryFormStructure(request.form)
-     
-    if (request.method == 'POST' ):
-        name = form.name.data
-        Country = name
-        if (name in df.index):
-            capital = df.loc[name,'Capital']
-        else:
-            capital = name + ', no such country'
-        form.name.data = ''
-
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static\\Data\\users.csv'))
-
-    raw_data_table = df.to_html(classes = 'table table-hover')
-
-    return render_template('Query.html', 
-            form = form, 
-            name = capital, 
-            Country = Country,
-            raw_data_table = raw_data_table,
-            title='Query by the user',
-            year=datetime.now().year,
-            message='This page will use the web forms to get user input'
-        )
 
 # -------------------------------------------------------
 # Register new user page
@@ -163,6 +107,55 @@ def Login():
         'login.html', 
         form=form, 
         title='Login to data analysis',
+        year=datetime.now().year,
+        repository_name='Pandas',
+        )
+
+@app.route('/Data')
+def Data():
+    """Renders the data page."""
+    return render_template(
+        'Data.html',
+        title='Data',
+        year=datetime.now().year,
+        message='Welcome to my data'
+    )
+
+df = pd.read_csv("C:\\Users\\User\\Source\\Repos\\DemoFormProject\\DemoFormProject\\static\\Data\\API_ILO_country_YU.csv")
+@app.route  ('/DataSet')
+def DataSet():
+    """Renders the DataSet page."""
+    return render_template(
+        'DataSet.html',
+        title='DataSet',
+        year=datetime.now().year,
+        message='My Data Set', data = df.to_html(classes = "table table-hover")
+    )
+
+@app.route('/album')
+def album():
+    """Renders the album page."""
+    return render_template(
+        'album.html',
+        title='Album',
+        year=datetime.now().year,
+    )
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    form = ContactFormStructure(request.form)
+
+    if (request.method == 'POST' and form.validate()):
+        flash('Thanks for contacting us')
+
+    if (request.method == 'POST' and form.validate()):
+            db_Functions.AddContact(form)
+            db_table = ""
+
+    return render_template(
+        'contact.html', 
+        form=form, 
+        title='Contact',
         year=datetime.now().year,
         repository_name='Pandas',
         )

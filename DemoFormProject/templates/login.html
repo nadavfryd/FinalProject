@@ -2,6 +2,38 @@
 
 {% block content %}
 
+<style>
+    body {
+        animation: 10000ms ease-in-out infinite color-change;
+    }
+
+    @keyframes color-change {
+        0% {
+            background-color: teal;
+        }
+
+        20% {
+            background-color: gold;
+        }
+
+        40% {
+            background-color: indianred;
+        }
+
+        60% {
+            background-color: violet;
+        }
+
+        80% {
+            background-color: green;
+        }
+
+        100% {
+            background-color: teal;
+        }
+    }
+</style>
+
 <h2>{{ title }}</h2>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -57,5 +89,7 @@
         </tr>
     </table>
 </form>
+
+<img src="https://i.imgur.com/fUExyXv.png" alt="meme" style="width:750px;height:500px;border:0;position:absolute;right:80px;top:100px;">
 
     {% endblock %}
