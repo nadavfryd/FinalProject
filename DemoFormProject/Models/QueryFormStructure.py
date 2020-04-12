@@ -38,7 +38,7 @@ class QueryFormStructure(FlaskForm):
 ##                         form be "posted" (sent to the server for process)
 class LoginFormStructure(FlaskForm):
     username   = StringField('User name:  ' , validators = [DataRequired()])
-    password   = PasswordField('Pass word:  ' , validators = [DataRequired()])
+    password   = PasswordField('Password:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
 
 
@@ -56,12 +56,13 @@ class LoginFormStructure(FlaskForm):
 ##   the 'submit' button - the button the user will press to have the 
 ##                         form be "posted" (sent to the server for process)
 class UserRegistrationFormStructure(FlaskForm):
-    FirstName  = StringField('First name:  ' , validators = [DataRequired()])
-    LastName   = StringField('Last name:  ' , validators = [DataRequired()])
-    PhoneNum   = StringField('Phone number:  ' , validators = [DataRequired()])
-    EmailAddr  = StringField('E-Mail:  ' , validators = [DataRequired()])
+    FirstName  = StringField('First name:' , validators = [DataRequired()])
+    LastName   = StringField('Last name:' , validators = [DataRequired()])
+    PhoneNum   = TextField('Phone number', validators = [DataRequired()])
+    #PhoneNum   = SelectField('Phone number', choices = [('Pelephone', '050'), ('We4G', '051'), ('Cellcom', '052'), ('Hot mobile ', '053'), ('Partner', '054'), ('019 Mobile', '055 2'), ('Golan telecom', '058')])
+    EmailAddr = TextField("Email",[validators.Required(), validators.Email("Email isn't valid")])
     username   = StringField('User name:  ' , validators = [DataRequired()])
-    password   = PasswordField('Pass word:  ' , validators = [DataRequired()])
+    password   = PasswordField('Password:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
 
 ## This class have the fields that the user can set, to have the query parameters for analysing the data
@@ -79,7 +80,11 @@ class UserRegistrationFormStructure(FlaskForm):
 class ContactFormStructure(FlaskForm):
     FirstName  = StringField('First name:  ' , validators = [DataRequired()])
     LastName   = StringField('Last name:  ' , validators = [DataRequired()])
-    PhoneNumber   = StringField('Phone number:  ' , validators = [DataRequired()])
-    EMail  = StringField('E-Mail:  ' , validators = [DataRequired()])
-    Message  = StringField('Message:  ' , validators = [DataRequired()])
+    PhoneNumber   = TextField('Phone number', validators = [DataRequired()])
+    #PhoneNumber   = SelectField('Phone number', choices = [('Pelephone', '050'), ('We4G', '051'), ('Cellcom', '052'), ('Hot mobile ', '053'), ('Partner', '054'), ('019 Mobile', '055 2'), ('Golan telecom', '058')])
+    EMail  = TextField("E-mail",[validators.Required(), validators.Email("Email isn't valid")])
+    Message  = TextAreaField('Message:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
+    
+
+

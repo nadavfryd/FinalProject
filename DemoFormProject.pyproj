@@ -51,13 +51,14 @@
     <Folder Include="DemoFormProject\templates\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DemoFormProject\static\Data\API_ILO_country_YU.csv" />
+    <Content Include="DemoFormProject\static\Data\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv" />
     <Content Include="DemoFormProject\static\Data\contact.csv" />
     <Content Include="DemoFormProject\static\Data\users.csv" />
     <Content Include="DemoFormProject\static\Data\capitals.csv" />
     <Content Include="DemoFormProject\static\Pics\pic1.jpg" />
     <Content Include="DemoFormProject\templates\album.html" />
     <Content Include="DemoFormProject\templates\Data.html" />
+    <Content Include="DemoFormProject\templates\DataQuery.html" />
     <Content Include="DemoFormProject\templates\DataSet.html" />
     <Content Include="DemoFormProject\templates\register.html" />
     <Content Include="DemoFormProject\templates\login.html" />
