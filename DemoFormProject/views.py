@@ -121,13 +121,19 @@ def Data():
         message='Welcome to my data'
     )
 
-df = pd.read_csv("C:\\Users\\User\\Source\\Repos\\DemoFormProject\\DemoFormProject\\static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv", skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', 'Indicator Code', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
 @app.route  ('/DataSet')
 def DataSet():
     """Renders the DataSet page."""
+
+    df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', 'Indicator Code', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
+    raw_data_table = ""
+    if (request.method == 'POST' and form.validate()):
+        raw_data_table = df.sample(30).to_html(classes = 'table table-hover')
+
     return render_template(
         'DataSet.html',
         title='DataSet',
+        raw_data_table = raw_data_table,
         year=datetime.now().year,
         message='My Data Set', data = df.to_html(classes = "table table-hover")
     )

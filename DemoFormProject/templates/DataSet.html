@@ -54,7 +54,10 @@
 
     </div>
 
-    <head>
+    <div>
+        {{raw_data_table | safe}}
+    </div>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .collapsible {
@@ -80,13 +83,11 @@
             background-color: #f1f1f1;
         }
     </style>
-</head>
+
 <button type="button" class="collapsible">DataBase</button>
-<div class="w3-responsive">
     <div class="content">
         <p> {{ data | safe}}</p>
     </div>
-</div>
 <script>
 var coll = document.getElementsByClassName("collapsible");
 var i;
