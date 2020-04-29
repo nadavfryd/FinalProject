@@ -2,13 +2,71 @@
 
 {% block content %}
 
-<input type="text" list="country" />
-<datalist id="country">
-    <option>Israel</option>
-    <option>Egypt</option>
-    <option>China</option>
-    <option>Japan</option>
-</datalist>
+<h2>{{ title }}</h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for message in messages %}
+<h3>{{ message[1] }}</h3>
+<br />
+    {% endfor %}
+{% endif %}
+{% endwith %}
+
+<br />
+<br />
+<br />
+
+<form method=post>
+    {{ form.csrf }}
+    {{ form.csrf_token }}
+    <table>
+        <tr>
+            <td>
+                {{ form.name.label }}
+            </td>
+            <td>
+                {{ form.name }}
+            </td>
+            <td>
+                {% if form.name.errors %}
+                <ul class="text-danger">{% for error in form.name.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ form.name2.label }}
+            </td>
+            <td>
+                {{ form.name2 }}
+            </td>
+            <td>
+                {% if form.name2.errors %}
+                <ul class="text-danger">{% for error in form.name2.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div class="input submit">
+                    <input type="submit" value="Submit">
+                </div>
+            <td>
+            <td></td>
+        </tr>
+    </table>
+</form>
+
+<div>
+    <img src="{{chart}}" />
+    <img src="{{chart2}}" />
+</div>
+
+
+
+
 
 
 

@@ -11,22 +11,16 @@ from wtforms import TextField, TextAreaField, SelectField, DateField
 from wtforms import validators, ValidationError
 
 from wtforms.validators import DataRequired
+
+from os import path
+import io
+
+import base64
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
 ### ----------------------------------------------------------- ###
 
-
-
-
-## This class have the fields that are part of the Country-Capital demonstration
-## You can see two fields:
-##   the 'name' field - will be used to get the country name
-##   the 'submit' button - the button the user will press to have the 
-##                         form be "posted" (sent to the server for process)
-class QueryFormStructure(FlaskForm):
-    name   = StringField('Country Name:  ' , validators = [DataRequired()])
-    submit = SubmitField('Submit')
-
-
-
+    
 
 ## This class have the fields that are part of the Login form.
 ##   This form will get from the user a 'username' and a 'password' and sent to the server
@@ -59,7 +53,6 @@ class UserRegistrationFormStructure(FlaskForm):
     FirstName  = StringField('First name:' , validators = [DataRequired()])
     LastName   = StringField('Last name:' , validators = [DataRequired()])
     PhoneNum   = TextField('Phone number', validators = [DataRequired()])
-    #PhoneNum   = SelectField('Phone number', choices = [('Pelephone', '050'), ('We4G', '051'), ('Cellcom', '052'), ('Hot mobile ', '053'), ('Partner', '054'), ('019 Mobile', '055 2'), ('Golan telecom', '058')])
     EmailAddr = TextField("Email",[validators.Required(), validators.Email("Email isn't valid")])
     username   = StringField('User name:  ' , validators = [DataRequired()])
     password   = PasswordField('Password:  ' , validators = [DataRequired()])
@@ -81,10 +74,20 @@ class ContactFormStructure(FlaskForm):
     FirstName  = StringField('First name:  ' , validators = [DataRequired()])
     LastName   = StringField('Last name:  ' , validators = [DataRequired()])
     PhoneNumber   = TextField('Phone number', validators = [DataRequired()])
-    #PhoneNumber   = SelectField('Phone number', choices = [('Pelephone', '050'), ('We4G', '051'), ('Cellcom', '052'), ('Hot mobile ', '053'), ('Partner', '054'), ('019 Mobile', '055 2'), ('Golan telecom', '058')])
     EMail  = TextField("E-mail",[validators.Required(), validators.Email("Email isn't valid")])
     Message  = TextAreaField('Message:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
     
 
 
+class CountriesFormStructure(FlaskForm):
+    name  = StringField('First Country:  ' , validators = [DataRequired()])
+    name2   = StringField('Second Country:  ' , validators = [DataRequired()])
+    submit = SubmitField('Submit')
+
+    def plot_to_img(fig):
+        pngImage = io.BytesIO()
+        FigureCanvas(fig).print_png(pngImage)
+        pngImageB64String = "data:image/png;base64,"
+        pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
+        return pngImageB64String

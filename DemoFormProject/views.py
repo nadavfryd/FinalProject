@@ -36,6 +36,7 @@ from wtforms import ValidationError
 from DemoFormProject.Models.QueryFormStructure import LoginFormStructure 
 from DemoFormProject.Models.QueryFormStructure import UserRegistrationFormStructure 
 from DemoFormProject.Models.QueryFormStructure import ContactFormStructure 
+from DemoFormProject.Models.QueryFormStructure import CountriesFormStructure 
 
 ###from DemoFormProject.Models.LocalDatabaseRoutines import IsUserExist, IsLoginGood, AddNewUser 
 
@@ -99,6 +100,7 @@ def Login():
     if (request.method == 'POST' and form.validate()):
         if (db_Functions.IsLoginGood(form.username.data, form.password.data)):
             flash('Login approved!')
+            return redirect('DataQuery')
             #return redirect('<were to go if login is good!')
         else:
             flash('Error in - Username and/or password')
@@ -121,21 +123,23 @@ def Data():
         message='Welcome to my data'
     )
 
+df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
+
 @app.route  ('/DataSet')
 def DataSet():
     """Renders the DataSet page."""
 
-    df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', 'Indicator Code', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
     raw_data_table = ""
+    data1 = df.head(31)
     if (request.method == 'POST' and form.validate()):
-        raw_data_table = df.sample(30).to_html(classes = 'table table-hover')
+        raw_data_table = df.to_html(classes = 'table table-hover')
 
     return render_template(
         'DataSet.html',
         title='DataSet',
         raw_data_table = raw_data_table,
         year=datetime.now().year,
-        message='My Data Set', data = df.to_html(classes = "table table-hover")
+        message='My Data Set', data = data1.to_html(classes = "table table-hover")
     )
 
 @app.route('/album')
@@ -166,12 +170,36 @@ def contact():
         repository_name='Pandas',
         )
 
-@app.route('/DataQuery')
+@app.route('/DataQuery', methods = ['GET' , 'POST']
+)
 def DataQuery():
     """Renders the DataQuery page."""
+    form = CountriesFormStructure(request.form)
+    chart = " "
+    chart2 = " "
+
+    if (request.method == 'POST' and form.validate()):
+        name = form.name.data
+        name2 = form.name2.data
+
+        graph, ax = plt.subplots()
+        graph2, ax1 = plt.subplots()
+
+        plt.tight_layout()
+        df_group = df.drop(columns=["Country Code", "Indicator Name"])
+
+        df_group.loc[df['Country Name'] == name].plot()
+        df_group.loc[df['Country Name'] == name2].plot()
+
+        chart = CountriesFormStructure.plot_to_img(graph)
+        chart2 = CountriesFormStructure.plot_to_img(graph2)
+
     return render_template(
         'DataQuery.html',
         title='DataQuery',
+        form = form,
+        chart = chart,
+        chart2 = chart2,
         year=datetime.now().year,
         message='presenting the data'
     )
