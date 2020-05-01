@@ -25,6 +25,8 @@ import requests
 import io
 import base64
 
+import sys
+
 from os import path
 
 from flask   import Flask, render_template, flash, request
@@ -176,30 +178,29 @@ def DataQuery():
     """Renders the DataQuery page."""
     form = CountriesFormStructure(request.form)
     chart = " "
-    chart2 = " "
 
-    if (request.method == 'POST' and form.validate()):
+    if (request.method == 'POST' and form.validate()): 
         name = form.name.data
         name2 = form.name2.data
 
         graph, ax = plt.subplots()
-        graph2, ax1 = plt.subplots()
 
         plt.tight_layout()
-        df_group = df.drop(columns=["Country Code", "Indicator Name"])
 
-        df_group.loc[df['Country Name'] == name].plot()
-        df_group.loc[df['Country Name'] == name2].plot()
+        df1 = form.transposeDf(df, 1991, 2020)
+
+        df1 = df1.loc[(df1['country'] == name) | (df1['country'] == name2)]
+
+        for name,country in df1.groupby("country"):
+            country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name)
 
         chart = CountriesFormStructure.plot_to_img(graph)
-        chart2 = CountriesFormStructure.plot_to_img(graph2)
 
     return render_template(
         'DataQuery.html',
         title='DataQuery',
         form = form,
         chart = chart,
-        chart2 = chart2,
         year=datetime.now().year,
         message='presenting the data'
     )

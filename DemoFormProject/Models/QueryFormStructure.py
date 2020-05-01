@@ -15,8 +15,14 @@ from wtforms.validators import DataRequired
 from os import path
 import io
 
+import pandas as pd
+import numpy as np
+
 import base64
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+
+from wtforms import TextField, TextAreaField, SelectField, DateField, SelectMultipleField, IntegerField
+
 
 ### ----------------------------------------------------------- ###
 
@@ -83,6 +89,8 @@ class ContactFormStructure(FlaskForm):
 class CountriesFormStructure(FlaskForm):
     name  = StringField('First Country:  ' , validators = [DataRequired()])
     name2   = StringField('Second Country:  ' , validators = [DataRequired()])
+    #startYear = IntegerField('Start Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
+    #endYear = IntegerField('End Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
     submit = SubmitField('Submit')
 
     def plot_to_img(fig):
@@ -91,3 +99,16 @@ class CountriesFormStructure(FlaskForm):
         pngImageB64String = "data:image/png;base64,"
         pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
         return pngImageB64String
+
+    def transposeDf(self, df,min_year,max_year):
+        df=df.set_index("Country Name")
+        df1=pd.DataFrame(columns=["country","year","value"])
+        mydict={}
+        index=0
+        for i in range(min_year,max_year):
+            col=df[str(i)]
+            for j in range(len(col.keys())):
+                    mydict[str(index)]=[col.keys()[j],i,col.values[j]]
+                    index+=1
+        return pd.DataFrame.from_dict(mydict, orient='index',columns=["country","year","value"])
+
