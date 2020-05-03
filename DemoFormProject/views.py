@@ -178,6 +178,8 @@ def DataQuery():
     """Renders the DataQuery page."""
     form = CountriesFormStructure(request.form)
     chart = " "
+    table1 = " "
+    table2 = " "
 
     if (request.method == 'POST' and form.validate()): 
         name = form.name.data
@@ -191,16 +193,27 @@ def DataQuery():
 
         df1 = df1.loc[(df1['country'] == name) | (df1['country'] == name2)]
 
-        for name,country in df1.groupby("country"):
-            country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name)
+        ax.set_ylabel('percentage')
+        ax.set_title('Unemployment rate - graph')
+
+        for name, country in df1.groupby("country"):
+            country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name, figsize = (7, 6))
 
         chart = CountriesFormStructure.plot_to_img(graph)
+
+        countryDataBase1 = df.loc[(df['Country Name'] == name)]
+        countryDataBase2 = df.loc[(df['Country Name'] == name2)]
+
+        table1 = countryDataBase1.to_html(classes = "table table-hover")
+        table2 = countryDataBase2.to_html(classes = "table table-hover")
 
     return render_template(
         'DataQuery.html',
         title='DataQuery',
         form = form,
         chart = chart,
+        table1 = table1,
+        table2 = table2,
         year=datetime.now().year,
         message='presenting the data'
     )
