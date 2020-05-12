@@ -125,11 +125,12 @@ def Data():
         message='Welcome to my data'
     )
 
-df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
 
 @app.route  ('/DataSet')
 def DataSet():
     """Renders the DataSet page."""
+
+    df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
 
     raw_data_table = ""
     data1 = df.head(31)
@@ -177,6 +178,17 @@ def contact():
 def DataQuery():
     """Renders the DataQuery page."""
     form = CountriesFormStructure(request.form)
+
+    df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
+
+    df2 = df.groupby('Country Name').sum()
+
+    l = df2.index
+    m = list(zip(l, l))
+
+    form.name.choices = m
+    form.name2.choices = m
+
     chart = " "
     table1 = " "
     table2 = " "
@@ -184,7 +196,7 @@ def DataQuery():
     if (request.method == 'POST' and form.validate()): 
         name = form.name.data
         name2 = form.name2.data
-
+       
         graph, ax = plt.subplots()
 
         plt.tight_layout()
@@ -193,6 +205,12 @@ def DataQuery():
 
         df1 = df1.loc[(df1['country'] == name) | (df1['country'] == name2)]
 
+        countryDataBase1 = df.loc[(df['Country Name'] == name)]
+        countryDataBase2 = df.loc[(df['Country Name'] == name2)]
+
+        table1 = countryDataBase1.to_html(classes = "table table-hover")
+        table2 = countryDataBase2.to_html(classes = "table table-hover")
+
         ax.set_ylabel('percentage')
         ax.set_title('Unemployment rate - graph')
 
@@ -200,12 +218,6 @@ def DataQuery():
             country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name, figsize = (7, 6))
 
         chart = CountriesFormStructure.plot_to_img(graph)
-
-        countryDataBase1 = df.loc[(df['Country Name'] == name)]
-        countryDataBase2 = df.loc[(df['Country Name'] == name2)]
-
-        table1 = countryDataBase1.to_html(classes = "table table-hover")
-        table2 = countryDataBase2.to_html(classes = "table table-hover")
 
     return render_template(
         'DataQuery.html',

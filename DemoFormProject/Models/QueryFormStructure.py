@@ -87,12 +87,11 @@ class ContactFormStructure(FlaskForm):
 
 
 class CountriesFormStructure(FlaskForm):
-    name  = StringField('First Country:  ' , validators = [DataRequired()])
-    name2   = StringField('Second Country:  ' , validators = [DataRequired()])
+    name  = SelectField('First Country:  ' , validators = [DataRequired()])
+    name2   = SelectField('Second Country:  ' , validators = [DataRequired()])
     #startYear = IntegerField('Start Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
     #endYear = IntegerField('End Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
     submit = SubmitField('Submit')
-
     def plot_to_img(fig):
         pngImage = io.BytesIO()
         FigureCanvas(fig).print_png(pngImage)
