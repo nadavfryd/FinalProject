@@ -182,10 +182,10 @@ def DataQuery():
     #calling for the my data base and using only the columns I need
     df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
 
-    #
+    #creating a group of all the countries
     df2 = df.groupby('Country Name').sum()
 
-    #
+    #entering the index into a variable and duplicating the variable into a list
     l = df2.index
     m = list(zip(l, l))
 
@@ -234,7 +234,7 @@ def DataQuery():
         ax.set_ylabel('percentage')
         ax.set_title('Unemployment rate - graph')
 
-        #creating the graph 
+        #creating the graph by kinds, axis x, axis y, size, lable name
         for name, country in df1.groupby("country"):
             country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name, figsize = (7, 6))
 
