@@ -85,13 +85,15 @@ class ContactFormStructure(FlaskForm):
     submit = SubmitField('Submit')
     
 
-
+    #giving fields for countries, years and sumbit
 class CountriesFormStructure(FlaskForm):
     name  = SelectField('First Country:  ' , validators = [DataRequired()])
     name2   = SelectField('Second Country:  ' , validators = [DataRequired()])
-    #startYear = IntegerField('Start Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
-    #endYear = IntegerField('End Year: ', [validators.DataRequired, validators.number_range(1991,2019)])
+    startYear = SelectField('Start Year: ', validators = [DataRequired()])
+    endYear = SelectField('End Year: ', validators = [DataRequired()])
     submit = SubmitField('Submit')
+
+    #convertign the graph in to image
     def plot_to_img(fig):
         pngImage = io.BytesIO()
         FigureCanvas(fig).print_png(pngImage)
@@ -99,6 +101,7 @@ class CountriesFormStructure(FlaskForm):
         pngImageB64String += base64.b64encode(pngImage.getvalue()).decode('utf8')
         return pngImageB64String
 
+    #transpose my data frame from columns to rows, for more data and easyier work on the data frame
     def transposeDf(self, df,min_year,max_year):
         df=df.set_index("Country Name")
         df1=pd.DataFrame(columns=["country","year","value"])

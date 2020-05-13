@@ -13,6 +13,7 @@
     }
 </style>
 
+
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
     {% for message in messages %}
@@ -25,7 +26,11 @@
 <br />
 <br />
 
-<h3>you can type on the bar the country you want for quicker </h3>
+<h3>you can type on the bar the country / year you want for quicker search</h3>
+
+<iframe width="420" height="315" style="position:absolute; left:850px;"
+        src="https://www.youtube.com/embed/BbF4BlW6lj4">
+</iframe>
 
 <br />
 
@@ -60,6 +65,32 @@
             </td>
         </tr>
         <tr>
+            <td>
+                {{ form.startYear.label }}
+            </td>
+            <td>
+                {{ form.startYear }}
+            </td>
+            <td>
+                {% if form.startYear.errors %}
+                <ul class="text-danger">{% for error in form.startYear.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ form.endYear.label }}
+            </td>
+            <td>
+                {{ form.endYear }}
+            </td>
+            <td>
+                {% if form.endYear.errors %}
+                <ul class="text-danger">{% for error in form.endYear.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
             <td></td>
             <td>
                 <div class="input submit">
@@ -70,7 +101,7 @@
         </tr>
     </table>
 </form>
-
+    
 <div>
     <img src="{{chart}}" />
     <br />

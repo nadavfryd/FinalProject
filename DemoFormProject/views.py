@@ -179,44 +179,66 @@ def DataQuery():
     """Renders the DataQuery page."""
     form = CountriesFormStructure(request.form)
 
+    #calling for the my data base and using only the columns I need
     df = pd.read_csv(path.join(path.dirname(__file__), "static\\Data\\API_SL.UEM.TOTL.ZS_DS2_en_csv_v2_887304.csv"), skiprows=4, usecols = ['Country Name','Country Code', 'Indicator Name', '1991', '1992', '1993', '1994', '1995', '1996', '1997', '1998', '1999', '2000', '2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019'])
 
+    #
     df2 = df.groupby('Country Name').sum()
 
+    #
     l = df2.index
     m = list(zip(l, l))
 
+    #putting the countries as choices
     form.name.choices = m
-    form.name2.choices = m
+    form.name2.choices = m 
+
+    #creating a for loop and add the values right into a list. the list is the values of the years
+    k = [(df.columns[i], df.columns[i]) for i in range(3, len(df.columns))]
+
+    #putting the choices of the start year and end year
+    form.startYear.choices = k
+    form.endYear.choices = k
 
     chart = " "
     table1 = " "
     table2 = " "
 
     if (request.method == 'POST' and form.validate()): 
+        #getting data from the field and entering it to the variable
         name = form.name.data
         name2 = form.name2.data
        
-        graph, ax = plt.subplots()
+        startYear = int(form.startYear.data)
+        endYear = int(form.endYear.data)
 
+        #creating axes in tiled positions
+        graph, ax = plt.subplots()
         plt.tight_layout()
 
+        #calling for the function that organiz the database
         df1 = form.transposeDf(df, 1991, 2020)
+        
+        #cutting everything in the data basse expect from the countryies the user chose and the years the user chose
+        df1 = df1.loc[((df1['country'] == name) | (df1['country'] == name2)) & (df1['year'] >= startYear) & (df1['year'] <= endYear)]
 
-        df1 = df1.loc[(df1['country'] == name) | (df1['country'] == name2)]
+        #cutting everything in the data basse expect from the country the user chose and the years the user chose
+        countryDataBase1 = df1.loc[(df1['country'] == name) & (df1['year'] >= startYear) & (df1['year'] <= endYear)]
+        countryDataBase2 = df1.loc[(df1['country'] == name2) & (df1['year'] >= startYear) & (df1['year'] <= endYear)]
 
-        countryDataBase1 = df.loc[(df['Country Name'] == name)]
-        countryDataBase2 = df.loc[(df['Country Name'] == name2)]
-
+        #converting the data the user chose into a html table with the data
         table1 = countryDataBase1.to_html(classes = "table table-hover")
         table2 = countryDataBase2.to_html(classes = "table table-hover")
 
+        #putting lables in the graph
         ax.set_ylabel('percentage')
         ax.set_title('Unemployment rate - graph')
 
+        #creating the graph 
         for name, country in df1.groupby("country"):
             country.plot(kind = "line", x = "year", y = "value", ax = ax, label = name, figsize = (7, 6))
 
+        #converting the graph into an image
         chart = CountriesFormStructure.plot_to_img(graph)
 
     return render_template(
